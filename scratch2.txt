@@ -1,0 +1,41 @@
+
+C02FL3YDMD6R github/spring-petclinic ‹dora-poc*› »                                                                                                    mini
+C02FL3YDMD6R github/spring-petclinic ‹dora-poc*› » eval $(minikube -p minikube docker-env)                                                            mini
+C02FL3YDMD6R github/spring-petclinic ‹dora-poc*› » k -n default create serviceaccount jenkins-robot                                                   mini
+serviceaccount/jenkins-robot created
+C02FL3YDMD6R github/spring-petclinic ‹dora-poc*› » k -n default create rolebinding jenkins-robot-binding --clusterrole=cluster-admin --serviceaccount=default:jenkins-robot
+
+rolebinding.rbac.authorization.k8s.io/jenkins-robot-binding created
+C02FL3YDMD6R github/spring-petclinic ‹dora-poc*› » k -n default get serviceaccount jenkins-robot -o go-template --template='{{range .secrets}}{{.name}}{{"\n"}}{{end}}'
+
+C02FL3YDMD6R github/spring-petclinic ‹dora-poc*› » k -n default get serviceaccount jenkins-robot -o yaml #-o go-template --template='{{range .secrets}}{{.name}}{{"\n"}}{{end}}'
+
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  creationTimestamp: "2024-10-02T21:31:24Z"
+  name: jenkins-robot
+  namespace: default
+  resourceVersion: "78426"
+  uid: f020cde4-209c-4ccd-9a79-719c5e887869
+C02FL3YDMD6R github/spring-petclinic ‹dora-poc*› » k -n default create clusterrolebinding jenkins-robot-binding --clusterrole=cluster-admin --serviceaccount=default:jenkins-robot
+
+clusterrolebinding.rbac.authorization.k8s.io/jenkins-robot-binding created
+C02FL3YDMD6R github/spring-petclinic ‹dora-poc*› » k -n default get serviceaccount jenkins-robot -o yaml #-o go-template --template='{{range .secrets}}{{.name}}{{"\n"}}{{end}}'
+
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  creationTimestamp: "2024-10-02T21:31:24Z"
+  name: jenkins-robot
+  namespace: default
+  resourceVersion: "78426"
+  uid: f020cde4-209c-4ccd-9a79-719c5e887869
+C02FL3YDMD6R github/spring-petclinic ‹dora-poc*› » kubectl create token jenkins-robot                                                                 mini
+
+eyJhbGciOiJSUzI1NiIsImtpZCI6IlFNNmJDUWp4VmpDaFhJcnA0T0FGSWxMWllDQ0V5WVh2Z2FjWk9qUjF6YVkifQ.eyJhdWQiOlsiaHR0cHM6Ly9rdWJlcm5ldGVzLmRlZmF1bHQuc3ZjLmNsdXN0ZXIubG9jYWwiXSwiZXhwIjoxNzI3OTA4NzA5LCJpYXQiOjE3Mjc5MDUxMDksImlzcyI6Imh0dHBzOi8va3ViZXJuZXRlcy5kZWZhdWx0LnN2Yy5jbHVzdGVyLmxvY2FsIiwianRpIjoiNGNiMjBlNWMtOGI4ZC00MTc5LTg3NmQtZjc4ZjI5NjdiZDA3Iiwia3ViZXJuZXRlcy5pbyI6eyJuYW1lc3BhY2UiOiJkZWZhdWx0Iiwic2VydmljZWFjY291bnQiOnsibmFtZSI6ImplbmtpbnMtcm9ib3QiLCJ1aWQiOiJmMDIwY2RlNC0yMDljLTRjY2QtOWE3OS03MTljNWU4ODc4NjkifX0sIm5iZiI6MTcyNzkwNTEwOSwic3ViIjoic3lzdGVtOnNlcnZpY2VhY2NvdW50OmRlZmF1bHQ6amVua2lucy1yb2JvdCJ9.dRKFl4nAkCm_rPuoQHdUtwEfuNitvAL1aTe7EdVT5giPNR5vV185Q72ySAVkHdC7CRCvFS8gmp2ibkPp-wmhzdrE-VOfZHXIatz6LJs7DwU9CdylrohisX_pB0VQDnIfAq0lFhq_ejFnfckCI7NiaVMxPogAKpSPL4ct15G_OMXXhoyQXJ3weJzRNO53tJnJ2EcfQVC-OeLnnB0DwbAFiLsxjn0tbweM8-pBmPTM-u8TymF-_ewX_2u3Rw97FdfVULu_XTXUEuSWE6TXNv1XAfOGxIhaMvqLiq1tL4M5ZGDtrAplIQJ0yK0so5wK9oDiiGKuY7DWc5ad9ybvMuvgIA
+C02FL3YDMD6R github/spring-petclinic ‹dora-poc*› »                                                                                                    mini
+
+
+kubectl config view
+    server: https://192.168.105.3:8443

@@ -9,6 +9,12 @@ podTemplate(
         ]
 ) {
     node(POD_LABEL) {
+        checkout scm
+        stage('Build') {
+            container('gradle') {
+                sh 'gradle build -x test -x processTestAot -x processAot'
+            }
+        }
         stage('Install Build Tools') {
             withKubeConfig([credentialsId: 'minikube-jenkins-robot-secret']) {
                 // See https://github.com/helm/helm/releases for latest release
@@ -16,36 +22,22 @@ podTemplate(
                 sh 'curl -sLO "https://dl.k8s.io/release/$(curl -sL https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"'
                 sh 'tar -xvzf helm-v3.16.1-linux-amd64.tar.gz'
                 sh 'chmod 700 linux-amd64/helm kubectl'
-                sh '''
-                    ./kubectl config set-context --current --namespace=default
-                    ./kubectl get pods
-                    ./linux-amd64/helm version'
-                   '''
-            }
-        }
-        stage('Checkout') {
-            git branch: 'dora-poc', url: 'https://github.com/andrebrowne/spring-petclinic.git'
-        }
-        stage('Build') {
-            container('gradle') {
-                sh 'gradle build -x test'
+                sh './kubectl config set-context --current --namespace=default'
             }
         }
         stage('Create Docker Image') {
             container('docker') {
-                sh 'docker -version'
+                sh 'docker build -t dora-poc/spring-petclinic .'
+                sh 'docker images'
             }
         }
         // stage('Deployment Trigger') {
         //     input "Trigger deployment?"
         // }
         stage('Deploy') {
-            echo 'Deploying'
             withKubeConfig([credentialsId: 'minikube-jenkins-robot-secret']) {
-                sh '''
-                    ./kubectl config set-context --current --namespace=default
-                   ./linux-amd64/helm upgrade --debug --install --force dora-poc-app dora-poc-app
-                   '''
+                sh './linux-amd64/helm upgrade --debug --install --force dora-poc-app dora-poc-app'
+                sh './kubectl rollout status deployment dora-poc-app --timeout=300s'
             }
         }
     }

@@ -1,3 +1,11 @@
+credentials:
+  system:
+    domainCredentials:
+    - credentials:
+      - string:
+          id: "minikube-jenkins-robot-secret"
+          scope: GLOBAL
+          secret: "{AQAAABAAAAPALWw0vddm6kakBrllZ/fWWpOk8KhPt6TbbULYzXBezljC9DbzOVIREwkXzJwnrtFCD/ELN6vbVoN4PqIIqHjxctuGjS+4AzaEz2rBLs53GaE70X3EEzyHJWEr6vfjsjgV1rdeu+GUE2s6kaV4AqhflspWgqqLqpNXbbtuk+I5kqNXjEu9s0VHlPuSUKDUjSASTHXcwpUDR03IMid+zWBKTyScoctRk+HRI24VF0MT/K6I5t5MR5vKrgJt9s2Y2w1PlS/Irwm24MTLZ30aCzxcidLX72ga3q4pKsAO7UkUE/43rEfgCM8NIXoahGDEZJC9bIVi+ZBUwdTbJwPy3Bl6ax7yoty5Ok09ZhudWURPNHpQdpH6BDzNYsvTwuxyA6sSwU4gj/CDhrjjInhl+UcThGoCB1yAlfCo4J8AFszW6FzQIls3C5p6Bw1qxhCU3HytyLOBEbESA5iS3pt6ts+B4oDzoJISRR0vdFEpNZ4em87eepEOtqpQcGm5vf11FwOPcWDCM3YBTAoz1+/fPrNTrhx3ZJ7dsCi3OxTckjwFqGCSPIBKzYyrFui53ooAkD3Ieqcpg4V3S1kr/JsMSL5PjKvqskjQnfWiIOMByWJq79YaqvAkTTFX5TyKGgQwfaj9sk9Y8qT/XPXizmyB48p1O4Tf04CTUaC0ATGZkulaW4I0NU7xmXG6Ey0QS8D54y7Baa3k0oMq8i0ju60oZsy3lK5GwH738MAJ7FEbofmWAzPWGN5sMuODCEWAbK5cghyVyk00GOnqn4qefhKej86qEwWSFhZnc0VFqYuMO7EUTcfbjpMPxhYIIsk+b/H9t0fUX28TKxYkAqUUieNME8yZY98MkN3r+yUvHuJjkhmWFQ92SRd7vZViJffvdramjk7fkWUsMuf0em7832kgsNQGCP/Urrpa/5MB8DfNjrz+Bdz3jUrSbt0UPP0W4jYBHukus8wcwt4nxR9kevXSGfcZ1QNvG3AmGeUWhvhoZlgJdGw8ydQJAHcjDBYv3rhClsEcwhfQvOJi+UJO+icfHJGAbIpjWYd22iRuOfN5vUgPkWedMU/N9mX2hjALYy/gqsSyMLZ0pZY76negxoEtBfWsEGre0EdikaoqmE7Wx+ot41fI8QNeYL7oM5dwXM8Ft0bMCFkEmAPspeZIi2Pl9xGNw3GxKEAjSRcnYbp3ySSESCPqyajspClB2Q1BqFTqGQqPAxenFWNqycP6WvKILno3UmhzGGj7j+1h5vynwNSPIFLDa9/X9Tgom+4M2ntLhJzkOaIfzWVLL0kos+3otmgyaA==}"
 jenkins:
   agentProtocols:
   - "JNLP4-connect"
@@ -25,11 +33,17 @@ jenkins:
               key: "JENKINS_URL"
               value: "http://dora-jenkins.default.svc.cluster.local:8080/"
           image: "jenkins/inbound-agent:3261.v9c670a_4748a_9-1"
+          livenessProbe:
+            failureThreshold: 0
+            initialDelaySeconds: 0
+            periodSeconds: 0
+            successThreshold: 0
+            timeoutSeconds: 0
           name: "jnlp"
-          resourceLimitCpu: "512m"
-          resourceLimitMemory: "512Mi"
-          resourceRequestCpu: "512m"
-          resourceRequestMemory: "512Mi"
+          resourceLimitCpu: "2048m"
+          resourceLimitMemory: "1024Mi"
+          resourceRequestCpu: "2048m"
+          resourceRequestMemory: "1024Mi"
           workingDir: "/home/jenkins/agent"
         id: "4ffa004f49816ecf5ac4dd889fd0fd8212eef42019074ca91526cfc5bfbd6393"
         label: "dora-jenkins-jenkins-agent"
@@ -160,6 +174,14 @@ tool:
     installations:
     - home: "git"
       name: "Default"
+  gradle:
+    installations:
+    - name: "Gradle"
+      properties:
+      - installSource:
+          installers:
+          - gradleInstaller:
+              id: "8.10.2"
   mavenGlobalConfig:
     globalSettingsProvider: "standard"
     settingsProvider: "standard"

@@ -27,7 +27,7 @@ kubectl config set-context --current --namespace=${NAMESPACE}
 
 echo "> Provisioning pods..."
 
-minikube start --kubernetes-version=latest --disk-size 50gb # --driver qemu2 --network socket_vmnet
+minikube start --kubernetes-version=latest --disk-size 50gb
 #minikube ssh docker image prune -a
 eval $(minikube -p minikube docker-env)
 
@@ -59,9 +59,9 @@ if [ "$CICD" == "jenkins" ] ; then
     # https://github.com/jenkinsci/helm-charts/blob/main/charts/jenkins/README.md
     echo ">> Installing jenkins via helm"
     helm upgrade --install --namespace ${NAMESPACE} ${NAMESPACE}-jenkins jenkins/jenkins
+    echo ">> Waiting for Jenkins pod..."
+    kubectl rollout status statefulset ${NAMESPACE}-jenkins --timeout=${SLEEP_DURATION_SECONDS}s
     kubectl exec --namespace ${NAMESPACE} -it svc/${NAMESPACE}-jenkins -c jenkins -- /bin/cat /run/secrets/additional/chart-admin-password && echo
-    echo ">> Waiting for DevLake pods.."
-    kubectl rollout status statefulset dora-jenkins --timeout=${SLEEP_DURATION_SECONDS}s
     echo "After setting up a port-forward in a new terminal visit http://127.0.0.1:8080 to use Jenkins"
     echo "run:\n\tkubectl port-forward --namespace ${NAMESPACE} svc/${NAMESPACE}-jenkins 8080:8080"
     echo "Login with the password from above and the username: admin"

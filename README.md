@@ -12,13 +12,14 @@
 Run:
 
 ```shell
+git clone https://github.com/andrebrowne/dora-devlake-poc
+cd dora-devlake-poc
 ./bin/setup-devlake-prereqs.sh
 ./bin/setup-devlake.sh
 ./jenkins/bin/get-jenkins-password.sh
 ```
 
 ## Installation
-
 
 ### Apache DevLake
 

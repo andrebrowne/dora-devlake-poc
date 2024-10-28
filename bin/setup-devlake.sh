@@ -11,15 +11,10 @@ SLEEP_DURATION_SECONDS=180
 NAMESPACE=${1:-default}
 UI_PORT=${2:-4000}
 
-# TODO: Prompt user for CI/CD platform choice (Jenkins or Concourse)
-# TODO: Validate script logic is correct for Concourse installation
-echo "> Installing tools..."
-HOMEBREW_NO_AUTO_UPDATE=1 brew install minikube helm kubernetes-cli k9s
+export HOMEBREW_NO_AUTO_UPDATE=1
 
-# For socket_vmnet - See https://minikube.sigs.k8s.io/docs/drivers/qemu/
-#brew install socket_vmnet qemu
-#brew tap homebrew/services
-#HOMEBREW=$(which brew) && sudo ${HOMEBREW} services start socket_vmnet
+echo "> Installing tools..."
+brew install minikube helm kubernetes-cli k9s
 
 echo "> Validate/Create namespace ${NAMESPACE}"
 if kubectl get namespace ${NAMESPACE}; then
@@ -31,28 +26,19 @@ fi
 kubectl config set-context --current --namespace=${NAMESPACE}
 
 echo "> Provisioning pods..."
-# TODO: detect docker and prompt to start if not running
-# TODO: detect minikube and start if not running
-#minikube pause
-#minikube stop
-# TODO: Parameterize --driver= and default to podman
+
 minikube start --kubernetes-version=latest --disk-size 50gb # --driver qemu2 --network socket_vmnet
 #minikube ssh docker image prune -a
 eval $(minikube -p minikube docker-env)
 
 echo ">> Adding helm repos"
 helm repo add devlake https://apache.github.io/incubator-devlake-helm-chart
-#helm repo add sonarqube https://SonarSource.github.io/helm-chart-sonarqube
 
 if [ "$CICD" == "jenkins" ] ; then
     helm repo add jenkins https://charts.jenkins.io
 fi
 
 helm repo update
-
-# This takes the longest (Due to Elastic Search indexing), fire it up first!
-#echo ">> Installing SonarQube (via helm)"
-#helm upgrade --install --namespace ${NAMESPACE} ${NAMESPACE}-sonarqube sonarqube/sonarqube # --set deploymentType=Deployment
 
 echo ">> Installing DevLake (via helm)"
 if [[ -z "${ENCYPTION_SECRET}" ]]; then
@@ -95,10 +81,6 @@ kubectl rollout status deployment ${NAMESPACE}-devlake-ui --timeout=${SLEEP_DURA
 
 echo ">> Waiting for DevLake Grafana pod..."
 kubectl rollout status deployment ${NAMESPACE}-devlake-grafana --timeout=${SLEEP_DURATION_SECONDS}s
-
-# echo ">> Waiting for SonarQube pods..."
-# kubectl rollout status statefulset ${NAMESPACE}-sonarqube-postgresql --timeout=${SLEEP_DURATION_SECONDS}s
-# kubectl rollout status statefulset ${NAMESPACE}-sonarqube-sonarqube --timeout=${SLEEP_DURATION_SECONDS}s
 
 #export NODE_PORT=$(kubectl get --namespace ${NAMESPACE} -o jsonpath="{.spec.ports[0].nodePort}" services ${NAMESPACE}-devlake-ui)
 #export NODE_IP=$(kubectl get nodes --namespace ${NAMESPACE} -o jsonpath="{.items[0].status.addresses[0].address}")

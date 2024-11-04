@@ -1,11 +1,12 @@
 #!/bin/bash
 
-set -x
+#set -x
 
 export HOMEBREW_NO_AUTO_UPDATE=1
 
 brew install docker docker-credential-helper docker-completion minikube helm kubernetes-cli k9s podman-desktop
-
+#brew update
+brew upgrade podman
 # NOTE: Compose is now part of the Docker CLI
 #brew install docker-compose 
 

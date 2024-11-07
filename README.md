@@ -3,22 +3,24 @@
 ## Prerequisites
 
 - [Docker v19.03.10+](https://docs.docker.com/get-docker)
-- Docker Driver (Any driver compatible with your Mac and Minikube's drivers [listed here](https://minikube.sigs.k8s.io/docs/drivers/))
-  __NOTE:__ The scripts provided in this repo assume the Minikube Podman driver is bound to the Minikube machine
 - [Homebrew](https://brew.sh/)
+- [Minikube Docker Driver](https://minikube.sigs.k8s.io/docs/drivers/) - Any driver compatible with your Mac and Minikube's drivers [listed here](https://minikube.sigs.k8s.io/docs/drivers/)
+
+__NOTE:__ The scripts provided in this repo assume the Minikube Podman driver is bound to the Minikube machine
 
 ## Quickstart
 
 Run:
 
 ```shell
+git clone https://github.com/andrebrowne/dora-devlake-poc
+cd dora-devlake-poc
 ./bin/setup-devlake-prereqs.sh
 ./bin/setup-devlake.sh
 ./jenkins/bin/get-jenkins-password.sh
 ```
 
 ## Installation
-
 
 ### Apache DevLake
 
@@ -31,7 +33,7 @@ Configuration is pretty easy, you can follow the Apache DevLake [Setup Guide](ht
 ### Jenkins
 
 - Install and configure [plugins](jenkins/plugins.md)
-- Add a credential for the K8s cluster (e.g. [This script](bin/create-cicd-service-account.sh) can create a `jenkins-robot` service account for jenkins on minikube and generates a token for the service account in the `default` namespace)
+- Add a credential for the K8s cluster (e.g. [This script](bin/create-cicd-service-account.sh) can create a `jenkins-robot` service account for jenkins on minikube and generates a token for the service account in the `devlake` namespace)
 - Create a pipeline (e.g. [This Jenkinsfile](jenkins/Jenkinsfile) creates a pipeline that can build, containerize and install the `dora-poc` branch of [this repo](https://github.com/andrebrowne/spring-petclinic.git))
 - Increase jenkins runner agent pod resources
 - Update the Cloud Pod Template to use the `jenkins-robot` service account

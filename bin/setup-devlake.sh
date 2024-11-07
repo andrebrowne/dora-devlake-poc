@@ -45,7 +45,7 @@ fi
 helm repo update
 
 echo ">> Installing DevLake (via helm)"
-if [[ -z "${ENCYPTION_SECRET}" ]]; then
+if [[ -z "${ENCRYPTION_SECRET}" ]]; then
     echo ">> Using existing ENCRYPTION_SECRET"
 else
     # Create devlake secret

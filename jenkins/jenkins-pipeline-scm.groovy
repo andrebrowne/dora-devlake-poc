@@ -1,3 +1,13 @@
+properties([
+    parameters: [
+        string(
+            name: 'namespace',
+            description: 'Enter your target namespace:',
+            defaultValue: 'devlake',
+            trim: true
+    )]
+])
+
 podTemplate(
         inheritFrom: 'default',
         containers: [
@@ -31,11 +41,9 @@ podTemplate(
         stage('Create Docker Image') {
             container('docker') {
                 sh 'docker build -t dora-poc/spring-petclinic .'
+                sh 'docker images'
             }
         }
-        // stage('Deployment Trigger') {
-        //     input "Trigger deployment?"
-        // }
         stage('Deploy') {
             withKubeConfig([credentialsId: 'minikube-jenkins-robot-secret']) {
                 sh './linux-amd64/helm upgrade --debug --install --force dora-poc-app dora-poc-app'

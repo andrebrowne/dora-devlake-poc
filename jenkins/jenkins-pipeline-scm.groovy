@@ -10,6 +10,9 @@ podTemplate(
 ) {
     node(POD_LABEL) {
         checkout scm
+        // stage('Deployment Trigger') {
+        //     input "Trigger deployment?"
+        // }
         stage('Build') {
             container('gradle') {
                 sh 'gradle build -x test -x processTestAot -x processAot'
@@ -22,7 +25,7 @@ podTemplate(
                 sh 'curl -sLO "https://dl.k8s.io/release/$(curl -sL https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"'
                 sh 'tar -xvzf helm-v3.16.1-linux-amd64.tar.gz'
                 sh 'chmod 700 linux-amd64/helm kubectl'
-                sh './kubectl config set-context --current --namespace=default'
+                sh './kubectl config set-context --current --namespace=devlake'
             }
         }
         stage('Create Docker Image') {

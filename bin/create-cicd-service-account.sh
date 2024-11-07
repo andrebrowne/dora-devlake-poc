@@ -3,7 +3,7 @@
 set -x
 
 SA_NAME=${1:-jenkins}
-NAMESPACE=${2:-default}
+NAMESPACE=${2:-devlake}
 
 eval $(minikube -p minikube docker-env)
 

@@ -10,4 +10,3 @@ sudo podman-mac-helper install
 podman machine start --userns=keep-id:uid=${UID}
 podman machine list
 podman machine info
-
